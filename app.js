@@ -236,29 +236,21 @@ async function handleSubmit(e) {
     // --- Convert resume to base64 ---
     const resumeBase64 = await fileToBase64(file);
 
-    // --- Build URL-encoded params (Apps Script reads via e.parameter) ---
-    const params = new URLSearchParams();
-    params.append('name', name);
-    params.append('age', age);
-    params.append('email', email);
-    params.append('phone', phone);
-    params.append('dob', formatDOB(dob));
-    params.append('address', address);
-    params.append('resumeName', file.name);
-    params.append('resumeBase64', resumeBase64);
-
-    // --- Submit ---
+    // --- Submit via hidden form + iframe (bypasses CORS entirely) ---
     setLoading(true);
 
     try {
-        const response = await fetch(GOOGLE_APPS_SCRIPT_WEB_APP_URL, {
-            method: 'POST',
-            body: params,
-            mode: 'no-cors',
+        await submitViaIframe({
+            name,
+            age,
+            email,
+            phone,
+            dob: formatDOB(dob),
+            address,
+            resumeName: file.name,
+            resumeBase64,
         });
 
-        // Apps Script returns an opaque response due to redirects.
-        // A successful POST will not throw, so we treat it as success.
         statusMsg.textContent = '✅ Application submitted successfully!';
         statusMsg.classList.add('status-msg--success');
         form.reset();
@@ -271,6 +263,59 @@ async function handleSubmit(e) {
     } finally {
         setLoading(false);
     }
+}
+
+/**
+ * Submits data to Apps Script using a hidden form targeting a hidden iframe.
+ * This method bypasses CORS because it's a regular form POST, not an XHR.
+ * @param {Object} data - Key-value pairs to submit.
+ * @returns {Promise<void>}
+ */
+function submitViaIframe(data) {
+    return new Promise((resolve, reject) => {
+        // Create hidden iframe
+        const iframe = document.createElement('iframe');
+        iframe.name = 'hiddenFrame_' + Date.now();
+        iframe.style.display = 'none';
+        document.body.appendChild(iframe);
+
+        // Create hidden form
+        const hiddenForm = document.createElement('form');
+        hiddenForm.method = 'POST';
+        hiddenForm.action = GOOGLE_APPS_SCRIPT_WEB_APP_URL;
+        hiddenForm.target = iframe.name;
+        hiddenForm.style.display = 'none';
+
+        // Add hidden inputs for each data field
+        for (const [key, value] of Object.entries(data)) {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = key;
+            input.value = value;
+            hiddenForm.appendChild(input);
+        }
+
+        document.body.appendChild(hiddenForm);
+
+        // Resolve after iframe loads (Apps Script processed the request)
+        iframe.addEventListener('load', () => {
+            // Clean up
+            setTimeout(() => {
+                document.body.removeChild(hiddenForm);
+                document.body.removeChild(iframe);
+            }, 500);
+            resolve();
+        });
+
+        iframe.addEventListener('error', () => {
+            document.body.removeChild(hiddenForm);
+            document.body.removeChild(iframe);
+            reject(new Error('Form submission failed'));
+        });
+
+        // Submit the form
+        hiddenForm.submit();
+    });
 }
 
 form.addEventListener('submit', handleSubmit);
