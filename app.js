@@ -90,6 +90,24 @@ function calculateAge(dateStr) {
     return age;
 }
 
+/**
+ * Converts a File object to a base64-encoded string.
+ * @param {File} file - The file to convert.
+ * @returns {Promise<string>} Base64-encoded file content.
+ */
+function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+            // result is "data:application/pdf;base64,XXXX…" — strip the prefix
+            const base64 = reader.result.split(',')[1];
+            resolve(base64);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+}
+
 /* ===== UI Helpers ===== */
 
 /**
@@ -215,15 +233,19 @@ async function handleSubmit(e) {
         return;
     }
 
-    // --- Build FormData ---
-    const formData = new FormData();
-    formData.append('name', name);
-    formData.append('age', age);
-    formData.append('email', email);
-    formData.append('phone', phone);
-    formData.append('dob', formatDOB(dob));
-    formData.append('address', address);
-    formData.append('resume', file);
+    // --- Convert resume to base64 ---
+    const resumeBase64 = await fileToBase64(file);
+
+    // --- Build URL-encoded params (Apps Script reads via e.parameter) ---
+    const params = new URLSearchParams();
+    params.append('name', name);
+    params.append('age', age);
+    params.append('email', email);
+    params.append('phone', phone);
+    params.append('dob', formatDOB(dob));
+    params.append('address', address);
+    params.append('resumeName', file.name);
+    params.append('resumeBase64', resumeBase64);
 
     // --- Submit ---
     setLoading(true);
@@ -231,7 +253,7 @@ async function handleSubmit(e) {
     try {
         const response = await fetch(GOOGLE_APPS_SCRIPT_WEB_APP_URL, {
             method: 'POST',
-            body: formData,
+            body: params,
             mode: 'no-cors',
         });
 
