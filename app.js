@@ -7,7 +7,7 @@
 
 /* ===== Configuration ===== */
 const GOOGLE_APPS_SCRIPT_WEB_APP_URL =
-    'https://script.google.com/macros/s/AKfycbxIoTu22abdtxMfI7qqRvk7as7NRaRCHd_M6gOuLRnt_1HsT4h8roEOXK_zw00DVwDrJw/exec';
+    'https://script.google.com/macros/s/AKfycbx8dmg4EBXquhlma-DrkffDYJU0ZnS051enhKtQ5uQMXy3TrCypDc_HbIEpZKNptbbj/exec';
 
 /** Maximum resume file size in bytes (500 KB). */
 const MAX_RESUME_SIZE = 500 * 1024;
@@ -319,4 +319,5 @@ function submitViaIframe(data) {
 }
 
 form.addEventListener('submit', handleSubmit);
+
 
