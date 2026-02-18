@@ -7,7 +7,7 @@
 
 /* ===== Configuration ===== */
 const GOOGLE_APPS_SCRIPT_WEB_APP_URL =
-    'https://script.google.com/macros/s/AKfycbxrq5TcZsf5C8BWxSrcQKVhI5TEMuKT7azu3Nzqg2uyiOC3nS9Ymq5gQtPQzXuxKKzdow/exec';
+    'https://script.google.com/macros/s/AKfycbwNXX1KNBwdvkYzg5YRODABugvc1g6nOK10gUeQ7AH-2741jMXqCCA3HzQOYcSwYyKvGA/exec';
 
 /** Maximum resume file size in bytes (500 KB). */
 const MAX_RESUME_SIZE = 500 * 1024;
