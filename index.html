@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+        content="jobs." />
+    <title>HireFlow — Job Application Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@600;700&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+
+    <!-- ===== TOP NAVBAR ===== -->
+    <nav class="navbar" role="navigation" aria-label="Main navigation">
+        <div class="navbar__brand">
+            <span class="navbar__logo">&#128188;</span>
+            <h1 class="navbar__title">JOBSSSSSSSS</h1>
+        </div>
+        <ul class="navbar__links">
+            <li><a href="#" class="navbar__link navbar__link--active">Dashboard</a></li>
+        </ul>
+    </nav>
+
+    <!-- ===== MAIN LAYOUT ===== -->
+    <div class="layout">
+
+        <!-- ===== MAIN CONTENT ===== -->
+        <main class="main">
+            <h2 class="main__title">Submit Your Application</h2>
+            <p class="main__subtitle">Fill in the details below to apply. Your data is sent securely to our system.</p>
+
+            <form id="applicationForm" novalidate>
+
+                <!-- Card 1: Personal Details -->
+                <section class="card card--peach">
+                    <h3 class="card__title">Personal Details</h3>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="name">Full Name</label>
+                            <input type="text" id="name" name="name" placeholder="John Doe" required
+                                aria-label="Full Name" />
+                            <span class="error-msg" id="nameError"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="dob">Date of Birth</label>
+                            <input type="date" id="dob" name="dob" required aria-label="Date of Birth" />
+                            <span class="error-msg" id="dobError"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="age">Age</label>
+                            <input type="number" id="age" name="age" placeholder="Auto-calculated" readonly
+                                aria-label="Age" tabindex="-1" />
+                            <span class="error-msg" id="ageError"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" placeholder="you@example.com" required
+                                aria-label="Email" />
+                            <span class="error-msg" id="emailError"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone" name="phone" placeholder="9876543210" maxlength="10" required
+                                aria-label="Phone Number" />
+                            <span class="error-msg" id="phoneError"></span>
+                        </div>
+
+                        <div class="form-group form-group--full">
+                            <label for="address">Address</label>
+                            <textarea id="address" name="address" rows="3" placeholder="123 Main Street, City" required
+                                aria-label="Address"></textarea>
+                            <span class="error-msg" id="addressError"></span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Card 2: Resume Upload -->
+                <section class="card card--lavender">
+                    <h3 class="card__title">Resume Upload</h3>
+                    <p class="card__hint">PDF only &bull; Max 500 KB</p>
+
+                    <div class="upload-zone" id="uploadZone">
+                        <span class="upload-zone__icon">&#128196;</span>
+                        <p class="upload-zone__text">Click to select your resume</p>
+                        <input type="file" id="resume" name="resume" accept=".pdf" required
+                            aria-label="Upload Resume" />
+                    </div>
+                    <p class="file-name" id="fileName"></p>
+                    <span class="error-msg" id="resumeError"></span>
+                </section>
+
+                <!-- Card 3: Submit -->
+                <section class="card card--mint">
+                    <h3 class="card__title">Ready to Apply?</h3>
+                    <button type="submit" class="btn-submit" id="submitBtn">
+                        <span id="btnText">Submit Application</span>
+                        <span id="btnSpinner" class="spinner hidden"></span>
+                    </button>
+                    <p class="status-msg" id="statusMsg"></p>
+                </section>
+
+            </form>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
