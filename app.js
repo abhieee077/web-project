@@ -10,7 +10,25 @@ const dobInput = document.getElementById("dob");
 const ageInput = document.getElementById("age");
 const fileNameDisplay = document.getElementById("fileName");
 
-// Auto age
+// Convert DOB YYYY-MM-DD → DD/MM/YYYY
+function formatDOB(dateStr) {
+    const parts = dateStr.split("-");
+    return parts[2] + "/" + parts[1] + "/" + parts[0];
+}
+
+// Convert file → Base64
+function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+            resolve(reader.result.split(',')[1]);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+}
+
+// Auto age from DOB
 dobInput.addEventListener("change", function () {
     const dob = dobInput.value;
     if (!dob) return;
@@ -27,7 +45,7 @@ dobInput.addEventListener("change", function () {
     ageInput.value = age;
 });
 
-// Show file name
+// Show selected file name
 resumeInput.addEventListener("change", function () {
     const file = resumeInput.files[0];
     if (file) {
@@ -35,13 +53,7 @@ resumeInput.addEventListener("change", function () {
     }
 });
 
-// Convert date
-function formatDOB(dateStr) {
-    const parts = dateStr.split("-");
-    return parts[2] + "/" + parts[1] + "/" + parts[0];
-}
-
-// Submit
+// Submit form
 async function handleSubmit(e) {
     e.preventDefault();
 
@@ -62,21 +74,26 @@ async function handleSubmit(e) {
         return;
     }
 
+    const base64 = await fileToBase64(file);
     const dobFormatted = formatDOB(dobInput.value);
 
-    const data = new FormData();
-    data.append("name", document.getElementById("name").value);
-    data.append("age", ageInput.value);
-    data.append("email", document.getElementById("email").value);
-    data.append("phone", document.getElementById("phone").value);
-    data.append("address", document.getElementById("address").value);
-    data.append("dob", dobFormatted);
-    data.append("resumeName", file.name);
+    const params = new URLSearchParams();
+    params.append("name", document.getElementById("name").value);
+    params.append("age", ageInput.value);
+    params.append("email", document.getElementById("email").value);
+    params.append("phone", document.getElementById("phone").value);
+    params.append("address", document.getElementById("address").value);
+    params.append("dob", dobFormatted);
+    params.append("resumeName", file.name);
+    params.append("resumeBase64", base64);
 
     await fetch(GOOGLE_APPS_SCRIPT_WEB_APP_URL, {
         method: "POST",
         mode: "no-cors",
-        body: data
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: params.toString()
     });
 
     statusMsg.textContent = "Application Submitted!";
