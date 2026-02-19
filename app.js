@@ -1,7 +1,7 @@
 'use strict';
 
 const GOOGLE_APPS_SCRIPT_WEB_APP_URL =
-'https://script.google.com/macros/s/AKfycbxv7G2HKTj0r1-K11p46srlH1ZJP6HBuKwiZfTwaLExktNNR-7eaMEBJZtTGeefXodX/exec';
+'https://script.google.com/macros/s/AKfycbyBTfMkR6rjZfldjB8_9czUaHM1l2dw6gFe91Jv8qyscKUkXB2i16ybK2JHgtrhE91cYw/exec';
 
 const form = document.getElementById("applicationForm");
 const resumeInput = document.getElementById("resume");
@@ -10,7 +10,7 @@ const dobInput = document.getElementById("dob");
 const ageInput = document.getElementById("age");
 const fileNameDisplay = document.getElementById("fileName");
 
-// Auto age calculation
+// Auto-calculate age from DOB
 dobInput.addEventListener("change", function () {
     const dob = dobInput.value;
     if (!dob) return;
@@ -35,7 +35,7 @@ resumeInput.addEventListener("change", function () {
     }
 });
 
-// Convert date to DD/MM/YYYY
+// Convert YYYY-MM-DD → DD/MM/YYYY
 function formatDOB(dateStr) {
     const parts = dateStr.split("-");
     return parts[2] + "/" + parts[1] + "/" + parts[0];
