@@ -1,7 +1,7 @@
 'use strict';
 
 const GOOGLE_APPS_SCRIPT_WEB_APP_URL =
-'https://script.google.com/macros/s/AKfycbyBTfMkR6rjZfldjB8_9czUaHM1l2dw6gFe91Jv8qyscKUkXB2i16ybK2JHgtrhE91cYw/exec';
+'https://script.google.com/macros/s/AKfycbzJA1VFEtU87BieWwk3isyYnusJr5lRKIy9fA1m6A8d4R7RCZpP_Nhnavx0_c5WxN1K7w/exec';
 
 const form = document.getElementById("applicationForm");
 const resumeInput = document.getElementById("resume");
@@ -10,7 +10,7 @@ const dobInput = document.getElementById("dob");
 const ageInput = document.getElementById("age");
 const fileNameDisplay = document.getElementById("fileName");
 
-// Auto-calculate age from DOB
+// Auto age
 dobInput.addEventListener("change", function () {
     const dob = dobInput.value;
     if (!dob) return;
@@ -27,7 +27,7 @@ dobInput.addEventListener("change", function () {
     ageInput.value = age;
 });
 
-// Show selected file name
+// Show file name
 resumeInput.addEventListener("change", function () {
     const file = resumeInput.files[0];
     if (file) {
@@ -35,13 +35,13 @@ resumeInput.addEventListener("change", function () {
     }
 });
 
-// Convert YYYY-MM-DD → DD/MM/YYYY
+// Convert date
 function formatDOB(dateStr) {
     const parts = dateStr.split("-");
     return parts[2] + "/" + parts[1] + "/" + parts[0];
 }
 
-// Submit form
+// Submit
 async function handleSubmit(e) {
     e.preventDefault();
 
