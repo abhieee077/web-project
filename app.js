@@ -1,7 +1,7 @@
 'use strict';
 
 const GOOGLE_APPS_SCRIPT_WEB_APP_URL =
-'https://script.google.com/macros/s/AKfycbxklQTLXOWIkGyiA1BiipmyxyE0BU_rGUaiMHHw24_pFtffJ55Rpgzy7wmvxZfnmd9EaA/exec';
+'https://script.google.com/macros/s/AKfycbxKUnG_0LiHaxUrd6Lp4bdAJKA0Z_FbTKuZnNpu-b-I9qDu7P0_LOayj7WjrBhvwshlQQ/exec';
 
 const form = document.getElementById("applicationForm");
 const resumeInput = document.getElementById("resume");
@@ -55,51 +55,46 @@ resumeInput.addEventListener("change", function () {
 
 // Submit
 async function handleSubmit(e) {
-    e.preventDefault();
+  e.preventDefault();
 
-    const file = resumeInput.files[0];
+  const file = resumeInput.files[0];
 
-    if (!file) {
-        alert("Upload resume");
-        return;
-    }
+  if (!file) {
+    alert("Upload resume");
+    return;
+  }
 
-    if (file.type !== "application/pdf") {
-        alert("Only PDF allowed");
-        return;
-    }
+  if (file.type !== "application/pdf") {
+    alert("Only PDF allowed");
+    return;
+  }
 
-    if (file.size > 500000) {
-        alert("Max size 500KB");
-        return;
-    }
+  if (file.size > 500000) {
+    alert("Max size 500KB");
+    return;
+  }
 
-    const base64 = await fileToBase64(file);
-    const dobFormatted = formatDOB(dobInput.value);
+  const base64 = await fileToBase64(file);
+  const dobFormatted = formatDOB(dobInput.value);
 
-    const params = new URLSearchParams();
-    params.append("name", document.getElementById("name").value);
-    params.append("age", ageInput.value);
-    params.append("email", document.getElementById("email").value);
-    params.append("phone", document.getElementById("phone").value);
-    params.append("address", document.getElementById("address").value);
-    params.append("dob", dobFormatted);
-    params.append("resumeName", file.name);
-    params.append("resumeBase64", base64);
+  const params = new URLSearchParams();
+  params.append("name", document.getElementById("name").value);
+  params.append("age", ageInput.value);
+  params.append("email", document.getElementById("email").value);
+  params.append("phone", document.getElementById("phone").value);
+  params.append("address", document.getElementById("address").value);
+  params.append("dob", dobFormatted);
+  params.append("resumeName", file.name);
+  params.append("resumeBase64", base64);
 
-    await fetch(GOOGLE_APPS_SCRIPT_WEB_APP_URL, {
-        method: "POST",
-        mode: "no-cors",
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded"
-        },
-        body: params.toString()
-    });
+  await fetch(GOOGLE_APPS_SCRIPT_WEB_APP_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    body: params.toString()
+  });
 
-    statusMsg.textContent = "Application Submitted!";
-    form.reset();
-    fileNameDisplay.textContent = "";
-    ageInput.value = "";
+  statusMsg.textContent = "Application Submitted!";
+  form.reset();
 }
-
-form.addEventListener("submit", handleSubmit);
